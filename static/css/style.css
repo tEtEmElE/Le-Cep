@@ -7,3 +7,13 @@ nav li img{
     width: 60px;
     margin-right: 10px;
 }
+table{
+    border-collapse: collapse;
+}
+th, td{
+    border-bottom: var(--pico-border-width) solid var(--pico-table-border-color);
+}
+td{
+    border-left: var(--pico-border-width) solid var(--pico-table-border-color);
+
+}
