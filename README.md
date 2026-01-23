@@ -1,9 +1,9 @@
-* Le CEP 
+# Le CEP 
 
-** Les objectif 
+## Les objectif 
 - Se faire voire 
 
-** Technologie 
+## Technologie 
 - Axum + Askana
 - Pico.css
 
