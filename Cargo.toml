@@ -1,0 +1,12 @@
+[package]
+name = "site"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+askama = "0.15.1"
+axum = "0.8.8"
+tokio = { version = "1", features = ["full"] }
+tower-http = { version = "0.5", features = ["fs"] }
+
+
