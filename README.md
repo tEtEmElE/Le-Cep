@@ -1,7 +1,7 @@
 # Le CEP 
 
-## Les objectif 
-- Se faire voire 
+## Les objectifs 
+- Se faire voir 
 
 ## Technologie 
 - Axum + Askana
