@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block content %}
+<div>
+    <h1>Panel</h1>
+    <article>
+        <details>
+            <summary>Server</summary>
+            <div role="group">
+                <button onclick="sendFunction('restart')">Restart</button>
+                <button onclick="sendFunction('shutdown')">Shutdown</button>
+                <button onclick="sendFunction('upgrade')">Update</button>
+            </div>
+        </details>
+    </article>
+    
+    <hr>
+    
+    <article>
+        <details>
+            <summary>Evenement</summary>
+            <form action="/event/create" method="post">
+                <label>
+                    Nom de l'évènement :
+                    <input type="text">
+                </label>
+                <label>
+                    Date de l'évènement :
+                    <input type="date">
+                </label>
+                <button type="submit">Création d'un évènement</button>
+            </form>
+            
+            {% include "components/planning.html" %}
+        </details>
+    </article>
+    
+</div>
+<script src="/static/js/main.js"></script>
+{% endblock %}

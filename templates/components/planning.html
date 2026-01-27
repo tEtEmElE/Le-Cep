@@ -125,4 +125,38 @@
     </tr>
   </tbody>
 </table>
+{% if connected %}
+<div id="result">
+
+</div>
+<script>
+const res = document.getElementById("result");
+document.querySelectorAll("td").forEach(td => {
+    td.addEventListener("click", () => {
+        res.innerHTML = `
+            <p>Vous avez cliqué sur la case de <strong>${td.className}</strong> de <strong>${td.parentElement.firstElementChild.innerText}</strong>.<p>
+            <form>
+                <label>
+                    Nom de l'évènement :
+                    <input type="text" name="event_name" placeholder="${td.textContent}">
+                </label>
+                <label>
+                    Date de l'évènement :
+                    <input type="date" name="event_date">
+                </label>
+                <label>
+                    Heure de début :
+                    <input type="time" name="start_time">
+                </label>
+                <label>
+                    Heure de fin :
+                    <input type="time" name="end_time">
+                </label>
+                <button type="submit">Création d'un évènement</button>
+            </form>
+            `;
+    });
+});
+</script>
+{% endif %}
 </div>

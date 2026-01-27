@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block content %}
+<form action="/api/login" method="post">
+  <fieldset>
+    <label>
+      Username
+      <input
+        name="username"
+        placeholder="Username"
+        autocomplete="username"
+        required
+      />
+    </label>
+    <label>
+      Password
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        autocomplete="current-password"
+        required
+      />
+    </label>
+  </fieldset>
+
+  <input
+    type="submit"
+    value="Subscribe"
+  />
+</form>
+{% endblock %}

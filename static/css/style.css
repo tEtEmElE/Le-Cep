@@ -15,5 +15,4 @@ th, td{
 }
 td{
     border-left: var(--pico-border-width) solid var(--pico-table-border-color);
-
 }
