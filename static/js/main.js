@@ -14,6 +14,6 @@ function sendFunction(func) {
         } else {
             alert("Error executing function");
         }
-    });
+    })
 }
 

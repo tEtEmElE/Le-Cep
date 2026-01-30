@@ -2,6 +2,7 @@
 {% block content %}
 <div>
     <h1>Panel</h1>
+    {% if grade=="ADMIN" %}
     <article>
         <details>
             <summary>Server</summary>
@@ -14,6 +15,7 @@
     </article>
     
     <hr>
+    {% endif %}
     
     <article>
         <details>

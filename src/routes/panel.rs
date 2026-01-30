@@ -14,6 +14,7 @@ use tower_sessions::Session;
 #[template(path = "routes/panel.html")]
 struct Panel{ 
     connected: bool,
+    grade: String
 }
 
 #[derive(Default, Template)]
@@ -25,7 +26,8 @@ struct Login{
 pub async fn panel(session: Session) -> impl IntoResponse {
     if session.get::<bool>("connected").await.unwrap() == Some(true) {
         Html(Panel{
-            connected: session.get::<bool>("connected").await.unwrap_or(None) == Some(true)
+            connected: session.get::<bool>("connected").await.unwrap_or(None) == Some(true),
+            grade: session.get::<String>("grade").await.unwrap_or(None).unwrap()
         }.render().unwrap())
     }else {
         Html(Login{connected: session.get::<bool>("connected").await.unwrap_or(None) == Some(true)}.render().unwrap())
