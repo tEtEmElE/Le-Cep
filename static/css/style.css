@@ -7,12 +7,20 @@ nav li img{
     width: 60px;
     margin-right: 10px;
 }
-table{
-    border-collapse: collapse;
+
+dialog {
+    border: none;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 10px;
 }
-th, td{
-    border-bottom: var(--pico-border-width) solid var(--pico-table-border-color);
-}
-td{
-    border-left: var(--pico-border-width) solid var(--pico-table-border-color);
+
+footer {
+    background-color: #f8f9fa;
+    text-align: center;
+    margin-top: 40px;
+    width: 100%;
+    margin-left: calc(50% - 50vw);
+    box-sizing: border-box;
 }

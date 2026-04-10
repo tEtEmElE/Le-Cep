@@ -16,7 +16,7 @@
     }
 
     pub async fn func(session: Session, Json(payload): Json<Func>) -> impl IntoResponse {
-        if session.get::<bool>("connected").await.unwrap() == Some(true) {
+        if session.get::<bool>("connected").await.unwrap() == Some(true) && session.get::<String>("grade").await.unwrap() == Some("ADMIN".to_string()) {
             let res = match payload.func.as_str() {
                 "shutdown" => {
                     shutdown();

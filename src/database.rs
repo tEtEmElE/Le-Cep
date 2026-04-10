@@ -1,8 +1,9 @@
 use sqlx::sqlite::SqlitePool;
 use sqlx::Row;
 use anyhow::Result;
+use serde::Deserialize;
 
-#[derive(Debug)]
+#[derive(Debug, Deserialize)]
 pub struct User{
     pub name : String,
     pub password : String,
@@ -22,7 +23,17 @@ pub async fn ajouter_user(pool: &SqlitePool, user: User) -> Result<()>{
     Ok(())
 }
 
-pub fn supprimer_user(){}
+pub async fn supprimer_user(pool: &SqlitePool, name: String) -> Result<()>{
+    let _ = sqlx::query(
+        "DELETE FROM users WHERE name = ?"
+    )
+        .bind(name)
+        .execute(pool)
+        .await?;
+    
+    Ok(())
+
+}
 
 pub async fn lister_users(pool: &SqlitePool) -> Result<Vec<User>> {
     let rows = sqlx::query("SELECT name, password, grade FROM users")
@@ -34,7 +45,6 @@ pub async fn lister_users(pool: &SqlitePool) -> Result<Vec<User>> {
         password: r.get("password"),
         grade: r.get("grade")
     }).collect();
-    println!("data base :\n{:#?}", users);
 
     Ok(users)
 }
@@ -75,9 +85,44 @@ pub async fn get_info(
     let row: Option<(String,)> = sqlx::query_as(query)
         .bind(name)
         .fetch_optional(pool)
+        .await?;    
+    Ok(row.map(|(v,)| v))
+}
+
+pub async fn ajouter_event(pool: &SqlitePool, title: &String, date: &String, description: &String) -> Result<()> {
+    let _ = sqlx::query(
+        "INSERT INTO events (title, date, description) VALUES (?, ?, ?)"
+    )
+        .bind(title)
+        .bind(format!("{}:00+00:00", date))
+        .bind(description)
+        .execute(pool)
+        .await?;
+    
+    Ok(())
+}
+
+pub async fn clean_events(pool: &SqlitePool) -> Result<(), sqlx::Error> {
+    sqlx::query(
+        "DELETE FROM events WHERE datetime(date) < datetime('now')"
+    )
+    .execute(pool)
+    .await?;
+
+    Ok(())
+}
+
+pub async fn lister_events(pool: &SqlitePool) -> Result<Vec<(String, String, String)>> {
+    let _ = clean_events(pool).await;
+    let rows = sqlx::query("SELECT title, date, description FROM events")
+        .fetch_all(pool)
         .await?;
 
-    println!("{:?}", row.clone().map(|(v,)| v));
-    
-    Ok(row.map(|(v,)| v))
+    let events: Vec<(String, String, String)> = rows.into_iter().map(|r| (
+        r.get("title"),
+        r.get("date"),
+        r.get("description")
+    )).collect();
+
+    Ok(events)
 }

@@ -30,5 +30,13 @@ Le projet met l’accent sur la **simplicité**, la **performance** et une **sta
 - Cargo
 
 ### Démarrage en local
+Créer le ficier default_user.json et suivre l'example de default_user_example.json en changeant les valeur.
+Cela créera le user 
 ```bash
+cp default_user_example.json default_user.json
 cargo run
+
+
+## TODO 
+- Impossible de supprimer tous les admins pour qu'il y est toujours un compte
+- Type de fichier déclaratif pour créer, modifier et supprimer des pages rappidement (un dossier avec l'arborésance du site -> routage automatique création des fichier html avec les bonne propriété bon titre ...)

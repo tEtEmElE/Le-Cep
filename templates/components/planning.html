@@ -1,162 +1,53 @@
-<div class="">
-<table>
-  <thead>
-    <tr>
-      <th scope="col">Heure</th>
-      <th scope="col">Lundi</th>
-      <th scope="col">Mardi</th>
-      <th scope="col">Mercredi</th>
-      <th scope="col">Jeudi</th>
-      <th scope="col">Vendredi</th>
-      <th scope="col">Samedi</th>
-      <th scope="col">Dimanche</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">09:00 - 10:00</th>
-      <td class="Lundi"></td>
-      <td class="Mardi"></td>
-      <td class="Mercredi"></td>
-      <td class="Jeudi"></td>
-      <td class="Vendredi"></td>
-      <td class="Samedi"></td>
-      <td class="Dimanche"></td>
-    </tr>
-    <tr>
-      <th scope="row">10:00 - 11:00</th>
-      <td class="Lundi"></td>
-      <td class="Mardi"></td>
-      <td class="Mercredi"></td>
-      <td class="Jeudi"></td>
-      <td class="Vendredi"></td>
-      <td class="Samedi"></td>
-      <td class="Dimanche" rowspan="2" style="background:#3498db; text-align:center;">Culte</td>
-    </tr>
-    <tr>
-      <th scope="row">11:00 - 12:00</th>
-      <td class="Lundi"></td>
-      <td class="Mardi"></td>
-      <td class="Mercredi"></td>
-      <td class="Jeudi"></td>
-      <td class="Vendredi"></td>
-      <td class="Samedi"></td>
-      <!-- <td class="Dimanche"></td> -->
-    </tr>
-    <tr>
-      <th scope="row">12:00 - 13:00</th>
-      <td class="Lundi"></td>
-      <td class="Mardi"></td>
-      <td class="Mercredi"></td>
-      <td class="Jeudi"></td>
-      <td class="Vendredi"></td>
-      <td class="Samedi"></td>
-      <td class="Dimanche"></td>
-    </tr>
-    <tr>
-      <th scope="row">13:00 - 14:00</th>
-      <td class="Lundi"></td>
-      <td class="Mardi"></td>
-      <td class="Mercredi"></td>
-      <td class="Jeudi"></td>
-      <td class="Vendredi"></td>
-      <td class="Samedi"></td>
-      <td class="Dimanche"></td>
-    </tr>
-    <tr>
-        <th scope="row">14:00 - 15:00</th>
-        <td class="Lundi"></td>
-        <td class="Mardi"></td>
-        <td class="Mercredi"></td>
-        <td class="Jeudi"></td>
-        <td class="Vendredi"></td>
-        <td class="Samedi"></td>
-        <td class="Dimanche"></td>
-    </tr>
-    <tr>
-        <th scope="row">15:00 - 16:00</th>
-        <td class="Lundi"></td>
-        <td class="Mardi"></td>
-        <td class="Mercredi"></td>
-        <td class="Jeudi"></td>
-        <td class="Vendredi"></td>
-        <td class="Samedi"></td>
-        <td class="Dimanche"></td>
-    </tr>
-    <tr>
-        <th scope="row">16:00 - 17:00</th>
-        <td class="Lundi"></td>
-        <td class="Mardi"></td>
-        <td class="Mercredi"></td>
-        <td class="Jeudi"></td>
-        <td class="Vendredi"></td>
-        <td class="Samedi"></td>
-        <td class="Dimanche"></td>
-    </tr>
-    <tr>
-        <th scope="row">17:00 - 18:00</th>
-        <td class="Lundi"></td>
-        <td class="Mardi"></td>
-        <td class="Mercredi"></td>
-        <td class="Jeudi"></td>
-        <td class="Vendredi"></td>
-        <td class="Samedi"></td>
-        <td class="Dimanche"></td>
-    </tr>
-    <tr>
-        <th scope="row">18:00 - 19:00</th>
-        <td class="Lundi"></td>
-        <td class="Mardi"></td>
-        <td class="Mercredi"></td>
-        <td class="Jeudi"></td>
-        <td class="Vendredi"></td>
-        <td class="Samedi"></td>
-        <td class="Dimanche"></td>
-    </tr>
-    <tr>
-        <th scope="row">19:00 - 20:00</th>
-        <td class="Lundi"></td>
-        <td class="Mardi"></td>
-        <td class="Mercredi"></td>
-        <td class="Jeudi" style="background:#f39c12; text-align:center;">Réunion<br>de<br>Prière</td>
-        <td class="Vendredi"></td>
-        <td class="Samedi"></td>
-        <td class="Dimanche"></td>
-    </tr>
-  </tbody>
-</table>
-{% if connected %}
-<div id="result">
+<h2>Nos Réunions :</h2>
+<div>
+  <h3>Régulières :</h3>  
+  {% for meeting in weekly_meetings %}
+    <article onclick="document.getElementById('modal-{{ meeting.title }}').showModal()" data-tooltip="{{ meeting.description }}">{{ meeting.title }} - {{ meeting.day }} à {{ meeting.heure }}</article>
+    <dialog id="modal-{{ meeting.title }}">
+      <article>
+        <header>
+          {{ meeting.title }} - {{ meeting.day }} à {{ meeting.heure }}
+        </header>
+        <div>
+          {{ meeting.description }}
+        </div>
+        <footer>
+          <button onclick="document.getElementById('modal-{{ meeting.title }}').close()">Fermer</button>
+        </footer>
+      </article>
+    </dialog>
+  {% endfor %}
 
+  <h3>Ponctuel : </h3>
+  {% for event in special_events %}
+    <article onclick="document.getElementById('modal-{{ event.date }}').showModal()" data-tooltip="{{ event.description }}">{{ event.title }} - <span class="date" data-date="{{ event.date }}"></span></article>
+    <dialog id="modal-{{ event.date }}">
+      <article>
+        <header>
+          {{ event.title }} - <span class="date" data-date="{{ event.date }}"></span>
+        </header>
+        <div>
+          {{ event.description }}
+        </div>
+        <footer>
+          <button onclick="document.getElementById('modal-{{ event.date }}').close()">Fermer</button>
+        </footer>
+      </article>
+    </dialog>
+  {% endfor %}
 </div>
-<script>
-const res = document.getElementById("result");
-document.querySelectorAll("td").forEach(td => {
-    td.addEventListener("click", () => {
-        res.innerHTML = `
-            <p>Vous avez cliqué sur la case de <strong>${td.className}</strong> de <strong>${td.parentElement.firstElementChild.innerText}</strong>.<p>
-            <form>
-                <label>
-                    Nom de l'évènement :
-                    <input type="text" name="event_name" placeholder="${td.textContent}">
-                </label>
-                <label>
-                    Date de l'évènement :
-                    <input type="date" name="event_date">
-                </label>
-                <label>
-                    Heure de début :
-                    <input type="time" name="start_time">
-                </label>
-                <label>
-                    Heure de fin :
-                    <input type="time" name="end_time">
-                </label>
-                <button type="submit">Création d'un évènement</button>
-            </form>
-            `;
-    });
-});
+  <script>
+    document.querySelectorAll('.date').forEach(el => {
+      const date = new Date(el.dataset.date);
+      let text = date.toLocaleDateString(
+                              'fr-FR', {  
+                                weekday: 'long', 
+                                day: '2-digit', 
+                                month: 'long', 
+                                year: 'numeric', 
+                                hour: '2-digit', 
+                                minute: '2-digit' 
+                              });
+      el.textContent = text[0].toUpperCase() + text.slice(1);
+    })
 </script>
-{% endif %}
-</div>

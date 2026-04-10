@@ -5,35 +5,82 @@
     {% if grade=="ADMIN" %}
     <article>
         <details>
-            <summary>Server</summary>
-            <div role="group">
-                <button onclick="sendFunction('restart')">Restart</button>
-                <button onclick="sendFunction('shutdown')">Shutdown</button>
-                <button onclick="sendFunction('upgrade')">Update</button>
+        <summary><h3>Utilisateurs</h3></summary>
+            <div>
+                <h4>Ajouter un Utilisateurs</h4>
+                <form action="/api/user/add" method="post">
+                    <label>
+                        Nom d'utilisateur :
+                        <input type="text" name="name">
+                    </label>
+                    <label>
+                        Mot de passe :
+                        <input type="password" name="password">
+                    </label>
+                    <label>
+                        Grade :
+                        <select name="grade">
+                            <option value="USER">USER</option>
+                            <option value="ADMIN">ADMIN</option>
+                        </select>
+                    </label>
+                    <button type="submit">Ajouter un utilisateur</button>
+                </form>
+                <hr>
+                <h4>Supprimer un Utilisateurs</h4>
+                <form action="/api/user/remove" method="post">
+                    <label>
+                        Nom d'utilisateur :
+                        <select name="name">
+                            {% for user in list_user %}
+                                <option value="{{ user.name }}">{{ user.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <button type="submit">Supprimer un utilisateur</button>
+                </form>
             </div>
         </details>
     </article>
-    
+
     <hr>
     {% endif %}
     
     <article>
         <details>
-            <summary>Evenement</summary>
-            <form action="/event/create" method="post">
-                <label>
-                    Nom de l'évènement :
-                    <input type="text">
-                </label>
-                <label>
-                    Date de l'évènement :
-                    <input type="date">
-                </label>
-                <button type="submit">Création d'un évènement</button>
-            </form>
-            
-            {% include "components/planning.html" %}
-        </details>
+            <summary><h3>Evenement</h3></summary>
+            <div>
+                <h4>Ajouter un évènement</h4>
+                <form action="/api/event" method="post">
+                    <label>
+                        Nom de l'évènement :
+                        <input type="text" name="title">
+                    </label>
+                    <label>
+                        Date de l'évènement :
+                        <input type="datetime-local" name="date">
+                    </label>
+                    <label>
+                        Description de l'évènement :
+                        <textarea name="description"></textarea>
+                    </label>
+                    <button type="submit">Création d'un évènement</button>
+                </form>
+                <hr>
+                <h4>Supprimer un évènement</h4>
+                <form action="/api/event/remove" method="post">
+                    <label>
+                        Nom de l'évènement à supprimer :
+                        <select name="title">
+                            {% for event in list_event %}
+                                <option value="{{ event.0 }}">{{ event.0 }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <button type="submit">Supprimer l'évènement</button>
+                </form>
+            </div>
+        </details> 
     </article>
     
 </div>

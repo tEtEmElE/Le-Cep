@@ -6,7 +6,7 @@ use axum::{
 use tower_sessions::{Expiry, MemoryStore, SessionManagerLayer};
 use tower_http::services::ServeDir;
 use time::Duration;
-use sqlx::sqlite::{SqlitePool, SqlitePoolOptions};
+use sqlx::sqlite::{SqlitePoolOptions};
 use std::sync::Arc;
 
 mod functions;
@@ -20,6 +20,8 @@ mod routes {
         pub mod login;
         pub mod logout;
         pub mod func;
+        pub mod events;
+        pub mod users;
     }
 }
 
@@ -27,7 +29,7 @@ mod routes {
 async fn main() {
     let pool = SqlitePoolOptions::new()
         .max_connections(5)
-        .connect("sqlite://users.db")
+        .connect("sqlite://db.db")
         .await
         .unwrap();
 
@@ -36,30 +38,26 @@ async fn main() {
             name TEXT PRIMARY KEY,
             password TEXT NOT NULL,
             grade TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS events (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            date TEXT NOT NULL,
+            description TEXT NOT NULL
         );",
     )
     .execute(&pool)
     .await;
+    
+    if !database::lister_users(&pool).await.unwrap().is_empty() {
+        let default_user: serde_json::Value = serde_json::from_str(&std::fs::read_to_string("default_user.json").unwrap()).unwrap();
 
-    let _ = database::ajouter_user(
-            &pool, 
-            database::User{
-                name:"user".to_string(), 
-                password:"password".to_string(),
-                grade: "ADMIN".to_string()
-            }
-        )
-        .await;
-    let _ = database::ajouter_user(
-            &pool, 
-            database::User{
-                name:"admin".to_string(), 
-                password:"password".to_string(),
-                grade: "USER".to_string()
-            }
-        )
-        .await;
-    let _ = database::lister_users(&pool).await;
+        let _ = database::ajouter_user(&pool, database::User{
+            name: default_user["name"].as_str().unwrap().to_string(),
+            password: default_user["password"].as_str().unwrap().to_string(),
+            grade: "ADMIN".to_string()
+        }).await;
+    }
 
     let pool = Arc::new(pool);
 
@@ -71,7 +69,11 @@ async fn main() {
     let api = Router::new()
         .route("/login", post(routes::api::login::login))
         .route("/logout", post(routes::api::logout::logout))
-        .route("/func", post(routes::api::func::func));
+        .route("/func", post(routes::api::func::func))
+        .route("/event", post(routes::api::events::event))
+        .route("/user/add", post(routes::api::users::api_ajouter_user))
+        .route("/user/remove", post(routes::api::users::api_supprimer_user))
+        .route("/event/remove", post(routes::api::events::supprimer_event));
 
     let app = Router::new()
         .nest_service("/static", ServeDir::new("static"))
