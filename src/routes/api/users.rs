@@ -26,7 +26,7 @@ pub struct DeleteUser {
 
 pub async fn api_supprimer_user(session: Session, Extension(pool): Extension<Arc<SqlitePool>>, Form(payload): Form<DeleteUser>) -> impl IntoResponse {
     if session.get::<bool>("connected").await.unwrap() == Some(true) && session.get::<String>("grade").await.unwrap() == Some("ADMIN".to_string()) {
-        supprimer_user(&pool, payload.name).await.unwrap();
+        let _ = supprimer_user(&pool, payload.name).await.unwrap();
     }
     Redirect::to("/")
 }

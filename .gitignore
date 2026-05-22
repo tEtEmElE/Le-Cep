@@ -1,4 +1,4 @@
 /target
 .env
-users.db
 default_user.json
+db.db

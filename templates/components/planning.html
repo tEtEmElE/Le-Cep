@@ -2,11 +2,11 @@
 <div>
   <h3>Régulières :</h3>  
   {% for meeting in weekly_meetings %}
-    <article onclick="document.getElementById('modal-{{ meeting.title }}').showModal()" data-tooltip="{{ meeting.description }}">{{ meeting.title }} - {{ meeting.day }} à {{ meeting.heure }}</article>
+    <article onclick="document.getElementById('modal-{{ meeting.title }}').showModal()" data-tooltip="{{ meeting.description }}">{{ meeting.title }} - {{ meeting.day }}, {{ meeting.heure }}</article>
     <dialog id="modal-{{ meeting.title }}">
       <article>
         <header>
-          {{ meeting.title }} - {{ meeting.day }} à {{ meeting.heure }}
+          {{ meeting.title }} - {{ meeting.day }} entre {{ meeting.heure }}
         </header>
         <div>
           {{ meeting.description }}
@@ -20,34 +20,63 @@
 
   <h3>Ponctuel : </h3>
   {% for event in special_events %}
-    <article onclick="document.getElementById('modal-{{ event.date }}').showModal()" data-tooltip="{{ event.description }}">{{ event.title }} - <span class="date" data-date="{{ event.date }}"></span></article>
-    <dialog id="modal-{{ event.date }}">
+    {% if event.date_debut[..10] != event.date_fin[..10] %}
+    <article onclick="document.getElementById('modal-{{ event.date_debut }}').showModal()" data-tooltip="{{ event.description }}">
+      {{ event.title }} — du <span class="date" data-date="{{ event.date_debut }}"></span> au <span class="date" data-date="{{ event.date_fin }}"></span>
+    </article>
+    <dialog id="modal-{{ event.date_debut }}">
       <article>
         <header>
-          {{ event.title }} - <span class="date" data-date="{{ event.date }}"></span>
+          {{ event.title }} — du <span class="date" data-date="{{ event.date_debut }}"></span> au <span class="date" data-date="{{ event.date_fin }}"></span>
         </header>
         <div>
           {{ event.description }}
         </div>
         <footer>
-          <button onclick="document.getElementById('modal-{{ event.date }}').close()">Fermer</button>
+          <button onclick="document.getElementById('modal-{{ event.date_debut }}').close()">Fermer</button>
         </footer>
       </article>
     </dialog>
+    {% else %}
+    <article onclick="document.getElementById('modal-{{ event.date_debut }}').showModal()" data-tooltip="{{ event.description }}">
+      {{ event.title }} — Le <span class="date" data-date="{{ event.date_debut }}" data-format="day"></span>, <span class="date" data-date="{{ event.date_debut }}" data-format="heure"></span>-<span class="date" data-date="{{ event.date_fin }}" data-format="heure"></span>
+    </article>
+    <dialog id="modal-{{ event.date_debut }}">
+      <article>
+        <header>
+          {{ event.title }} — Le <span class="date" data-date="{{ event.date_debut }}" data-format="day"></span>, <span class="date" data-date="{{ event.date_debut }}" data-format="heure"></span>-<span class="date" data-date="{{ event.date_fin }}" data-format="heure"></span>
+        </header>
+        <div>
+          {{ event.description }}
+        </div>
+        <footer>
+          <button onclick="document.getElementById('modal-{{ event.date_debut }}').close()">Fermer</button>
+        </footer>
+      </article>
+    </dialog>
+    {% endif %}
   {% endfor %}
 </div>
-  <script>
+<script>
     document.querySelectorAll('.date').forEach(el => {
       const date = new Date(el.dataset.date);
-      let text = date.toLocaleDateString(
-                              'fr-FR', {  
-                                weekday: 'long', 
-                                day: '2-digit', 
-                                month: 'long', 
-                                year: 'numeric', 
-                                hour: '2-digit', 
-                                minute: '2-digit' 
-                              });
-      el.textContent = text[0].toUpperCase() + text.slice(1);
-    })
+      const row_date = el.dataset.date;
+      if (el.dataset.format === 'day') {
+        let text = date.toLocaleDateString('fr-FR', { timeZone: 'Europe/Paris', weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+        el.textContent = text[0].toUpperCase() + text.slice(1);
+        return;
+      }else if (el.dataset.format === 'heure'){
+        el.textContent = `${row_date.slice(11, 16)}`;
+        return;
+      }else{
+        let text = date.toLocaleDateString(
+                                'fr-FR', {  
+                                  timeZone: 'Europe/Paris',
+                                  weekday: 'long', 
+                                  day: '2-digit', 
+                                  month: 'long', 
+                                });
+          el.textContent = text[0].toUpperCase() + text.slice(1) + ` ${row_date.slice(11, 16)}`;
+        }
+      });  
 </script>

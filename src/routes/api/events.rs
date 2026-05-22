@@ -19,7 +19,8 @@ pub async fn event(session: Session, Extension(pool): Extension<Arc<SqlitePool>>
         ajouter_event(
             &pool,
             &event.title.to_string(),
-            &event.date.to_string(),
+            &&event.date_debut.to_string(),
+            &&event.date_fin.to_string(),
             &event.description.to_string()
         ).await.unwrap();
         return Redirect::to("/planning");

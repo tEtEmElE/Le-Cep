@@ -27,9 +27,10 @@ mod routes {
 
 #[tokio::main]
 async fn main() {
+    println!("{:?}", std::env::current_dir());
     let pool = SqlitePoolOptions::new()
         .max_connections(5)
-        .connect("sqlite://db.db")
+        .connect("sqlite:db.db")
         .await
         .unwrap();
 
@@ -42,14 +43,15 @@ async fn main() {
         CREATE TABLE IF NOT EXISTS events (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
-            date TEXT NOT NULL,
+            date_debut TEXT NOT NULL,
+            date_fin TEXT NOT NULL,
             description TEXT NOT NULL
         );",
     )
     .execute(&pool)
     .await;
     
-    if !database::lister_users(&pool).await.unwrap().is_empty() {
+    if database::lister_users(&pool).await.unwrap().is_empty() {
         let default_user: serde_json::Value = serde_json::from_str(&std::fs::read_to_string("default_user.json").unwrap()).unwrap();
 
         let _ = database::ajouter_user(&pool, database::User{

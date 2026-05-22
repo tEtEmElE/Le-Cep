@@ -26,7 +26,8 @@ struct Planning{
 #[derive(Debug, Deserialize)]
 pub struct SpecialEvent {
     pub title: String,
-    pub date: String,
+    pub date_debut: String,
+    pub date_fin: String,
     pub description: String
 }
 
@@ -47,7 +48,7 @@ pub async fn planning(session: Session, Extension(pool): Extension<Arc<SqlitePoo
                     day: "Dimanche".into(), 
                     description: "Réunion de l'église tout les dimanches".into(),
                     heure: "10h-12h".into()
-                },
+                }, 
                 WeeklyMeeting {
                     title: "Réunion de prière".into(), 
                     day: "Jeudi".into(), 
@@ -55,10 +56,11 @@ pub async fn planning(session: Session, Extension(pool): Extension<Arc<SqlitePoo
                     heure: "19h-20h".into()
                 }
             ],
-            special_events: lister_events(&pool).await.unwrap_or(vec![]).into_iter().map(|(title, date, description)| 
+            special_events: lister_events(&pool).await.unwrap_or(vec![]).into_iter().map(|(title, date_debut, date_fin, description)| 
                 SpecialEvent {
                     title,
-                    date,
+                    date_debut,
+                    date_fin,
                     description
                 }
             ).collect()

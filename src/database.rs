@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use sqlx::sqlite::SqlitePool;
 use sqlx::Row;
 use anyhow::Result;
@@ -24,13 +26,35 @@ pub async fn ajouter_user(pool: &SqlitePool, user: User) -> Result<()>{
 }
 
 pub async fn supprimer_user(pool: &SqlitePool, name: String) -> Result<()>{
+    let nb_admin: Vec<sqlx::sqlite::SqliteRow> = sqlx::query(
+        "SELECT COUNT(*) AS nb FROM users WHERE grade = 'ADMIN'"
+    )
+        .fetch_all(pool)
+        .await?;
+
+    let nom_admin = sqlx::query(
+        "SELECT name FROM users WHERE grade = 'ADMIN'"
+    )
+        .fetch_all(pool)
+        .await?
+        .iter()
+        .map(
+            |r| 
+            r.get::<String, _>("name")
+        )
+            .collect::<Vec<String>>();
+
+
+    if !(nb_admin[0].get::<i64, _>("nb") > 1) && nom_admin.contains(&name) {
+        return Ok(());
+    }
     let _ = sqlx::query(
         "DELETE FROM users WHERE name = ?"
     )
         .bind(name)
         .execute(pool)
         .await?;
-    
+
     Ok(())
 
 }
@@ -89,12 +113,13 @@ pub async fn get_info(
     Ok(row.map(|(v,)| v))
 }
 
-pub async fn ajouter_event(pool: &SqlitePool, title: &String, date: &String, description: &String) -> Result<()> {
+pub async fn ajouter_event(pool: &SqlitePool, title: &String, date_debut: &String, date_fin: &String, description: &String) -> Result<()> {
     let _ = sqlx::query(
-        "INSERT INTO events (title, date, description) VALUES (?, ?, ?)"
+        "INSERT INTO events (title, date_debut, date_fin, description) VALUES (?, ?, ?, ?)"
     )
         .bind(title)
-        .bind(format!("{}:00+00:00", date))
+        .bind(format!("{}:00+00:00", date_debut))
+        .bind(format!("{}:00+00:00", date_fin))
         .bind(description)
         .execute(pool)
         .await?;
@@ -104,7 +129,7 @@ pub async fn ajouter_event(pool: &SqlitePool, title: &String, date: &String, des
 
 pub async fn clean_events(pool: &SqlitePool) -> Result<(), sqlx::Error> {
     sqlx::query(
-        "DELETE FROM events WHERE datetime(date) < datetime('now')"
+        "DELETE FROM events WHERE datetime(date_fin) < datetime('now')"
     )
     .execute(pool)
     .await?;
@@ -112,15 +137,16 @@ pub async fn clean_events(pool: &SqlitePool) -> Result<(), sqlx::Error> {
     Ok(())
 }
 
-pub async fn lister_events(pool: &SqlitePool) -> Result<Vec<(String, String, String)>> {
-    let _ = clean_events(pool).await;
-    let rows = sqlx::query("SELECT title, date, description FROM events")
+pub async fn lister_events(pool: &SqlitePool) -> Result<Vec<(String, String, String, String)>> {
+    let _ = clean_events(pool).await?;
+    let rows = sqlx::query("SELECT title, date_debut, date_fin, description FROM events")
         .fetch_all(pool)
         .await?;
 
-    let events: Vec<(String, String, String)> = rows.into_iter().map(|r| (
+    let events: Vec<(String, String, String, String)> = rows.into_iter().map(|r| (
         r.get("title"),
-        r.get("date"),
+        r.get("date_debut"),
+        r.get("date_fin"),
         r.get("description")
     )).collect();
 

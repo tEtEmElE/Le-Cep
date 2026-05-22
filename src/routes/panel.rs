@@ -20,7 +20,7 @@ struct Panel{
     connected: bool,
     grade: String,
     list_user: Vec<User>,
-    list_event: Vec<(String, String, String)>
+    list_event: Vec<(String, String, String, String)>
 }
 
 #[derive(Default, Template)]

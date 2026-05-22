@@ -11,15 +11,15 @@
                 <form action="/api/user/add" method="post">
                     <label>
                         Nom d'utilisateur :
-                        <input type="text" name="name">
+                        <input type="text" name="name" required>
                     </label>
                     <label>
                         Mot de passe :
-                        <input type="password" name="password">
+                        <input type="password" name="password" required>
                     </label>
                     <label>
                         Grade :
-                        <select name="grade">
+                        <select name="grade" required>
                             <option value="USER">USER</option>
                             <option value="ADMIN">ADMIN</option>
                         </select>
@@ -31,7 +31,7 @@
                 <form action="/api/user/remove" method="post">
                     <label>
                         Nom d'utilisateur :
-                        <select name="name">
+                        <select name="name" required>
                             {% for user in list_user %}
                                 <option value="{{ user.name }}">{{ user.name }}</option>
                             {% endfor %}
@@ -54,15 +54,19 @@
                 <form action="/api/event" method="post">
                     <label>
                         Nom de l'évènement :
-                        <input type="text" name="title">
+                        <input type="text" name="title" required>
                     </label>
                     <label>
-                        Date de l'évènement :
-                        <input type="datetime-local" name="date">
+                        Date de début de l'évènement :
+                        <input type="datetime-local" name="date_debut" required>
+                    </label>
+                    <label>
+                        Date de fin de l'évènement :
+                        <input type="datetime-local" name="date_fin" required>
                     </label>
                     <label>
                         Description de l'évènement :
-                        <textarea name="description"></textarea>
+                        <textarea name="description" required></textarea>
                     </label>
                     <button type="submit">Création d'un évènement</button>
                 </form>
@@ -71,7 +75,7 @@
                 <form action="/api/event/remove" method="post">
                     <label>
                         Nom de l'évènement à supprimer :
-                        <select name="title">
+                        <select name="title" required>
                             {% for event in list_event %}
                                 <option value="{{ event.0 }}">{{ event.0 }}</option>
                             {% endfor %}
