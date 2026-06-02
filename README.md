@@ -38,5 +38,5 @@ cargo run
 
 
 ## TODO 
-- Impossible de supprimer tous les admins pour qu'il y est toujours un compte
 - Type de fichier déclaratif pour créer, modifier et supprimer des pages rappidement (un dossier avec l'arborésance du site -> routage automatique création des fichier html avec les bonne propriété bon titre ...)
+- Port en dehors du code 
