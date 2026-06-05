@@ -38,6 +38,9 @@ pub async fn panel(session: Session, Extension(pool): Extension<Arc<SqlitePool>>
             list_event: lister_events(&pool).await.unwrap()
         }.render().unwrap())
     }else {
-        Html(Login{connected: session.get::<bool>("connected").await.unwrap_or(None) == Some(true)}.render().unwrap())
+        Html(Login{
+            connected: session.get::<bool>("connected").await.unwrap_or(None) == Some(true)
+        }.render().unwrap()
+        )
     }
 }
